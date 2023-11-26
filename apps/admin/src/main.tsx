@@ -7,6 +7,8 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { theme } from './theme.tsx'
 // import { HashRouter as Router } from "react-router-dom";
 import { BrowserRouter } from 'react-router-dom';
+import { ApolloProvider } from '@apollo/client'
+import { client } from './api/graphql/make-apollo-client'
 
 Amplify.configure({
   aws_cognito_region: 'us-east-2', // (required) - Region where Amazon Cognito project was created
@@ -20,12 +22,14 @@ Amplify.configure({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <Authenticator.Provider>
-        <CssBaseline />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </Authenticator.Provider>
+      <ApolloProvider client={client}>
+        <Authenticator.Provider>
+          <CssBaseline />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </Authenticator.Provider>
+      </ApolloProvider>
     </ThemeProvider>
   </React.StrictMode>,
 )

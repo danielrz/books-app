@@ -1,5 +1,5 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { fetchUserAttributes } from "aws-amplify/auth";
+import { fetchUserAttributes, AuthTokens } from "aws-amplify/auth";
 import { useState, useEffect } from "react";
 
 interface UserDetails {

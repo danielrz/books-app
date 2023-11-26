@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "codegen": "env-cmd -f ./.env graphql-codegen",
+    "codegen:watch": "env-cmd -f ./.env graphql-codegen --watch"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.0.1",
@@ -21,15 +23,23 @@
     "react-router-dom": "^6.19.0"
   },
   "devDependencies": {
+    "@apollo/client": "^3.8.7",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/client-preset": "^4.1.0",
+    "@graphql-codegen/typescript-operations": "^4.0.1",
+    "@graphql-codegen/typescript-react-apollo": "^4.1.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",
+    "apollo-link-rest": "^0.9.0",
     "dotenv": "^16.3.1",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "prettier": "^3.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }
