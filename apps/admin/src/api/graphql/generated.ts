@@ -267,6 +267,30 @@ export type UpdateBookMutation = {
   } | null;
 };
 
+export type ListBooksQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ListBooksQuery = {
+  __typename?: "Query";
+  listBooks?: Array<{
+    __typename?: "Book";
+    id: string;
+    title: string;
+    authors?: Array<string> | null;
+    description?: string | null;
+    publisher: string;
+    publishedDate: string;
+    status?: BookStatus | null;
+    favourite?: boolean | null;
+    infoLink?: string | null;
+    previewLink?: string | null;
+    imageLinks?: {
+      __typename?: "ImageLinks";
+      smallThumbnail?: string | null;
+      thumbnail?: string | null;
+    } | null;
+  } | null> | null;
+};
+
 export const BookFragmentDoc = gql`
   fragment Book on Book {
     id
@@ -438,3 +462,77 @@ export type UpdateBookMutationOptions = Apollo.BaseMutationOptions<
   UpdateBookMutation,
   UpdateBookMutationVariables
 >;
+export const ListBooksDocument = gql`
+  query ListBooks {
+    listBooks {
+      ...Book
+    }
+  }
+  ${BookFragmentDoc}
+`;
+
+/**
+ * __useListBooksQuery__
+ *
+ * To run a query within a React component, call `useListBooksQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListBooksQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListBooksQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListBooksQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    ListBooksQuery,
+    ListBooksQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<ListBooksQuery, ListBooksQueryVariables>(
+    ListBooksDocument,
+    options,
+  );
+}
+export function useListBooksLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ListBooksQuery,
+    ListBooksQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<ListBooksQuery, ListBooksQueryVariables>(
+    ListBooksDocument,
+    options,
+  );
+}
+export function useListBooksSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<
+    ListBooksQuery,
+    ListBooksQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<ListBooksQuery, ListBooksQueryVariables>(
+    ListBooksDocument,
+    options,
+  );
+}
+export type ListBooksQueryHookResult = ReturnType<typeof useListBooksQuery>;
+export type ListBooksLazyQueryHookResult = ReturnType<
+  typeof useListBooksLazyQuery
+>;
+export type ListBooksSuspenseQueryHookResult = ReturnType<
+  typeof useListBooksSuspenseQuery
+>;
+export type ListBooksQueryResult = Apollo.QueryResult<
+  ListBooksQuery,
+  ListBooksQueryVariables
+>;
+export function refetchListBooksQuery(variables?: ListBooksQueryVariables) {
+  return { query: ListBooksDocument, variables: variables };
+}

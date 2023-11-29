@@ -29,5 +29,5 @@ export default {
       ],
     },
   },
-  ignoreNoDocuments: true,
+  ignoreNoDocuments: false,
 };
