@@ -62,15 +62,17 @@ const Header = () => {
                 <MenuIcon />
               </IconButton>
             </Box>
-            <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 550,
-                fontFamily: "fangsong",
-              }}
-            >
-              Books App
-            </Typography>
+            <RouterLink to="/" style={{ textDecoration: 'none' }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 550,
+                  fontFamily: "fangsong",
+                }}
+              >
+                Books App
+              </Typography>
+            </RouterLink>
             <Stack direction="row" spacing={2} alignItems="end">
               <Typography
                 sx={{

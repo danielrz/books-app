@@ -1,5 +1,6 @@
 const PATHS = {
-  HOME: '/'
+  HOME: '/',
+  SEARCH: '/search',
 };
 
 export default PATHS;

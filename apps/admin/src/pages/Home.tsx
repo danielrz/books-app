@@ -1,6 +1,7 @@
+import { Link } from "react-router-dom";
 import { useCreateBookMutation, useListBooksQuery } from "../api/graphql/generated";
 import useUserDetails from "../hooks/useUserDetails";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 function Home() {
 
@@ -27,15 +28,20 @@ function Home() {
 
   return (
     <>
-      <h1>My Books App</h1>
-      <div>Welcome</div>
-      <div>{userDetails?.email}</div>
-      <div>{userDetails?.firstName}</div>
-      <div>{userDetails?.lastName}</div>
+      <h4>My Books collection</h4>
+      <Box sx={{ display: 'flex', gap:2 }}>
+        <div>Welcome</div>
+        <div>{userDetails?.email}</div>
+        <div>{userDetails?.firstName}</div>
+        <div>{userDetails?.lastName}</div>
+        <div>
+          <Button variant="contained" color="primary" onClick={() => signOut()}>
+            Sign Out
+          </Button>
+        </div>
+      </Box>
       <div>
-        <Button variant="contained" color="primary" onClick={() => signOut()}>
-          Sign Out
-        </Button>
+        <Link to="/search">Search for additional books</Link>
       </div>
       {(loading || createBookLoading) && <div>Loading...</div>}
       {error && <div>Error: {error.message}</div>}
