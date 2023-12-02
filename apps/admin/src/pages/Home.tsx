@@ -1,35 +1,50 @@
+import { Stack } from "@mui/material";
+import PageTitle from "../components/PageTitle";
+import { useBooks } from "../hooks/useBooks";
+import { BookTabs } from "../components/BookTabs";
+import { Book } from "../api/graphql/generated";
+import { useState } from "react";
+import BookDetailsDialog from "../components/BookDetailsDialog";
+import BookCardList from "../components/BookCardList";
+// import { LoadingButton } from "@mui/lab";
+
 import { Link } from "react-router-dom";
-import { useCreateBookMutation, useListBooksQuery } from "../api/graphql/generated";
 import useUserDetails from "../hooks/useUserDetails";
 import { Box, Button } from "@mui/material";
 
 function Home() {
-
+  const [open, setOpen] = useState(false);
+  const [detailsBook, setDetailsBook] = useState<Book | undefined>(undefined);
   const { userDetails, signOut } = useUserDetails();
-  const { data, loading, error, refetch } = useListBooksQuery();
-  const [
-    createBook,
-    { data: createBookData, loading: createBookLoading, error: createBookError }
-  ] = useCreateBookMutation();
-  const handleCreateBook = async () => {
-    await createBook({
-      variables: {
-        input: {
-          title: 'My Book',
-          publishedDate: '2021-10-10',
-          authors: ['Author 1', 'Author 2'],
-          description: 'My Book Description',
-          publisher: 'My Publisher',
-        }
-      }
-    })
-    refetch();
-  }
+
+  const {
+    books,
+    loading,
+    updateBookLoading,
+    deleteBookLoading,
+    handleUpdateBook,
+    handleDeleteBook,
+    // fetchMoreBooks,
+    // fetchingMore,
+    // canFetchMoreBooks,
+  } = useBooks();
+
+  const handleClickOpen = (book: Book) => {
+    setDetailsBook(book);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
-      <h4>My Books collection</h4>
-      <Box sx={{ display: 'flex', gap:2 }}>
+      {open && detailsBook && (
+        <BookDetailsDialog handleClose={handleClose} book={detailsBook} />
+      )}
+      <PageTitle title="My books collection" />
+      <Box sx={{ display: "flex", gap: 2 }}>
         <div>Welcome</div>
         <div>{userDetails?.email}</div>
         <div>{userDetails?.firstName}</div>
@@ -43,21 +58,64 @@ function Home() {
       <div>
         <Link to="/search">Search for additional books</Link>
       </div>
-      {(loading || createBookLoading) && <div>Loading...</div>}
-      {error && <div>Error: {error.message}</div>}
-      {createBookError && <div>Error: {createBookError.message}</div>}
-      <div><Button variant="contained" onClick={handleCreateBook}>Create</Button></div>
-      {data?.listBooks?.map((book) => (
-        <div key={book?.id}>
-          <div>{book?.title}</div>
-          <div>{book?.publishedDate}</div>
-          <div>{book?.authors}</div>
-          <div>{book?.description}</div>
-          <div>{book?.publisher}</div>
-        </div>
-      ))}
+      {/* <LoadingButton
+        variant="contained"
+        size="small"
+        color="primary"
+        disabled={!canFetchMoreBooks}
+        loading={fetchingMore}
+        sx={{ my: 1 }}
+        onClick={fetchMoreBooks}
+      >
+        Load more
+      </LoadingButton> */}
+      <Stack spacing={1}>
+        <BookTabs
+          booksCount={[books?.reading?.length]}
+          tabs={{
+            Reading: (
+              <BookCardList
+                books={books.reading}
+                loading={loading}
+                handleClickOpen={handleClickOpen}
+                updateBookLoading={updateBookLoading}
+                deleteBookLoading={deleteBookLoading}
+                handleUpdateBook={handleUpdateBook}
+                handleDeleteBook={handleDeleteBook}
+              />
+            ),
+          }}
+        />
+        <BookTabs
+          booksCount={[books?.unread?.length, books?.read?.length]}
+          tabs={{
+            "To Read": (
+              <BookCardList
+                books={books.unread}
+                loading={loading}
+                handleClickOpen={handleClickOpen}
+                updateBookLoading={updateBookLoading}
+                deleteBookLoading={deleteBookLoading}
+                handleUpdateBook={handleUpdateBook}
+                handleDeleteBook={handleDeleteBook}
+              />
+            ),
+            Finished: (
+              <BookCardList
+                books={books.read}
+                loading={loading}
+                handleClickOpen={handleClickOpen}
+                updateBookLoading={updateBookLoading}
+                deleteBookLoading={deleteBookLoading}
+                handleUpdateBook={handleUpdateBook}
+                handleDeleteBook={handleDeleteBook}
+              />
+            ),
+          }}
+        />
+        </Stack>
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;

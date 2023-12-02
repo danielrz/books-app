@@ -5,7 +5,7 @@ import {
   GoogleBook,
   useCreateBookMutation,
 } from "../api/graphql/generated";
-import BookCard from "./BookCard";
+import BookCard from "./BaseBookCard";
 import { CardTitle } from "./CardTitle";
 import { LoadingButton } from "@mui/lab";
 import { BookmarkAdd } from "@mui/icons-material";
@@ -17,7 +17,7 @@ interface GoogleBookCardProps {
 export const GoogleBookCard = ({ googleBook }: GoogleBookCardProps) => {
   const { id, volumeInfo: book } = googleBook;
 
-  const [addToBookshelf, { loading }] = useCreateBookMutation({
+  const [addToBook, { loading }] = useCreateBookMutation({
     variables: {
       input: {
         title: book.title,
@@ -32,6 +32,7 @@ export const GoogleBookCard = ({ googleBook }: GoogleBookCardProps) => {
         },
         previewLink: book.previewLink,
         infoLink: book.infoLink,
+        favourite: false,
       },
     },
   });
@@ -56,7 +57,7 @@ export const GoogleBookCard = ({ googleBook }: GoogleBookCardProps) => {
         <LoadingButton
           fullWidth
           startIcon={<BookmarkAdd />}
-          onClick={() => addToBookshelf()}
+          onClick={() => addToBook()}
           sx={{ alignSelf: "end" }}
           loading={loading}
           loadingIndicator="Adding..."

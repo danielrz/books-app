@@ -1,61 +1,67 @@
-import {
-  styled,
-  Card,
-  CardContent as Content,
-  CardActions as Actions,
-} from "@mui/material";
-import { CardMedia } from "@mui/material";
-import { Book } from "../api/graphql/generated";
-
-export const StyledCard = styled(Card)(({ theme }) => ({
-  minWidth: 200,
-  maxWidth: 300,
-  borderRadius: theme.spacing(2),
-  display: "flex",
-  flexDirection: "column",
-}));
-
-export const CardContent = styled(Content)(() => ({
-  height: "100%",
-}));
-
-export const CardActions = styled(Actions)(() => ({
-  justifyContent: "space-between",
-}));
+import { Typography } from "@mui/material";
+import { Book, UpdateBookInput } from "../api/graphql/generated";
+import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import Favorite from "@mui/icons-material/Favorite";
+import { IconButton } from "@mui/material";
+import { CardTitle } from "./CardTitle";
+import BaseBookCard from "./BaseBookCard";
+import BookCardMenu from "./BookCardMenu";
 
 interface BookCardProps {
   book: Book;
-  imgHeight?: number;
-  cardContent: React.ReactNode;
-  cardActions: React.ReactNode;
+  handleUpdateBook: (input: UpdateBookInput) => Promise<void>;
+  handleClickOpen: (book: Book) => void;
+  handleDeleteBook: (id: string) => Promise<void>;
+  updateBookLoading: boolean;
+  deleteBookLoading: boolean;
 }
 
 const BookCard = ({
   book,
-  imgHeight,
-  cardContent,
-  cardActions,
+  handleUpdateBook,
+  handleClickOpen,
+  handleDeleteBook,
+  updateBookLoading,
+  deleteBookLoading,
 }: BookCardProps) => {
+  const handleUpdateBookFavourite = () => {
+    handleUpdateBook({
+      id: book.id,
+      favourite: !book.favourite,
+    });
+  };
+
   return (
-    <StyledCard>
-      <CardMedia
-        component="img"
-        height={imgHeight || 200}
-        image={
-          book.imageLinks?.smallThumbnail ||
-          book.imageLinks?.thumbnail ||
-          "no-book-img.png"
-        }
-        alt={book.title}
-        sx={{
-          pt: 2,
-          objectFit: "contain",
-        }}
-      />
-      <CardContent>{cardContent}</CardContent>
-      <CardActions disableSpacing>{cardActions}</CardActions>
-    </StyledCard>
+    <BaseBookCard
+      book={book}
+      cardContent={
+        <>
+          <CardTitle variant="subtitle1">{book.title}</CardTitle>
+          <Typography variant="body2" color="text.secondary">
+            {book.authors && book.authors[0]}
+          </Typography>
+        </>
+      }
+      cardActions={
+        <>
+          <IconButton
+            aria-label="add to favorites"
+            onClick={handleUpdateBookFavourite}
+          >
+            {book.favourite ? <Favorite color="error" /> : <FavoriteBorder />}
+          </IconButton>
+          <BookCardMenu
+            book={book}
+            handleClickOpen={handleClickOpen}
+            updateBookLoading={updateBookLoading}
+            deleteBookLoading={deleteBookLoading}
+            handleUpdateBook={handleUpdateBook}
+            handleDeleteBook={handleDeleteBook}
+          />
+        </>
+      }
+    />
   );
 };
 
-export default BookCard
+export default BookCard;
